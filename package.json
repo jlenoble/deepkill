@@ -1,7 +1,7 @@
 {
   "name": "deepkill",
   "description": "Small helper to kill a process and all its forks",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "keywords": [],
   "author": {
     "name": "Jason Lenoble",
