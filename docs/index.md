@@ -1,10 +1,3 @@
-# deepkill
-
-Small helper to kill a process and all its forks
-
-  * [License](#license)
-
-
 ## Usage
 
 `deepKill` helps cleanup zombie child processes while for example doing some TDD that creates loads of them and failed to remove them for unobvious reasons.
@@ -22,7 +15,7 @@ deepKill(p.pid);
 // Continue doing stuff...
 ```
 
-## License
+## License !heading
 
 deepkill is [MIT licensed](./LICENSE).
 

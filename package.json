@@ -1,0 +1,53 @@
+{
+  "name": "deepkill",
+  "description": "Small helper to kill a process and all its forks",
+  "version": "0.0.0",
+  "keywords": [],
+  "author": {
+    "name": "Jason Lenoble",
+    "email": "jason.lenoble@gmail.com"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "engines": {
+    "node": ">=7.3.0"
+  },
+  "main": "lib/deepkill.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jlenoble/deepkill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jlenoble/deepkill/issues"
+  },
+  "homepage": "https://github.com/jlenoble/deepkill#readme",
+  "dependencies": {
+    "ps-tree": "^1.1.0"
+  },
+  "devDependencies": {
+    "autoreload-gulp": "*",
+    "babel-plugin-add-module-exports": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-es2016": "*",
+    "babel-preset-es2017": "*",
+    "chai": "*",
+    "child-process-data": "^0.5.1",
+    "del": "*",
+    "eslint-config-google": "*",
+    "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "gulp-babel": "*",
+    "gulp-eslint": "*",
+    "gulp-mocha": "*",
+    "gulp-rename": "*",
+    "gulp-replace": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-wrap": "*",
+    "markdown-include": "*",
+    "muter": "*",
+    "plumb-gulp": "*"
+  },
+  "peerDependencies": {}
+}
