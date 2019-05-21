@@ -1,53 +1,9 @@
 {
   "generator-wupjs": {
-    "devDeps": {
-      "gulp": "git://github.com/gulpjs/gulp.git#4.0",
-      "plumb-gulp": "*",
-      "autoreload-gulp": "*",
-      "gulp-sourcemaps": "*",
-      "del": "*",
-      "gulp-rename": "*",
-      "gulp-replace": "*",
-      "gulp-wrap": "*",
-      "markdown-include": "*",
-      "chai": "*",
-      "babel-preset-es2017": "*",
-      "babel-preset-es2016": "*",
-      "babel-preset-es2015": "*",
-      "babel-plugin-add-module-exports": "*",
-      "gulp-babel": "*",
-      "gulp-eslint": "*",
-      "eslint-config-google": "*",
-      "gulp-mocha": "*",
-      "muter": "*"
-    },
-    "genVersion": "0.3.1",
-    "updated": "2017-05-25T20:35:24.894Z",
-    "created": "2017-05-25T20:35:24.894Z",
-    "version": "0.0.0",
-    "contributors": [],
-    "keywords": [],
-    "deps": {},
-    "peerDeps": {},
-    "name": "deepkill",
-    "description": "Small helper to kill a process and all its forks",
-    "author": "Jason Lenoble",
-    "email": "jason.lenoble@gmail.com",
-    "github": "jlenoble",
-    "preprocessors": [],
-    "license": "MIT",
-    "babel": "es2017",
-    "linters": [
-      "EsLint"
-    ],
-    "addons": [],
-    "testRunners": [
-      "Mocha"
-    ],
-    "createdWith": "0.6.0-3",
+    "createdWith": "0.3.1",
     "modifiedWith": "0.6.0-3",
-    "createdOn": "2019-05-21T13:37:18.346Z",
-    "modifiedOn": "2019-05-21T13:37:18.346Z",
+    "createdOn": "2017-05-25T20:35:24.894Z",
+    "modifiedOn": "2019-05-21T13:49:46.000Z",
     "gulp": true,
     "srcDir": "src",
     "testDir": "test",
@@ -58,7 +14,8 @@
     "typescript": true,
     "jsx": false,
     "extensions": [
-      "ts"
+      "ts",
+      "js"
     ],
     "jupyter": false,
     "antlr4": false,
