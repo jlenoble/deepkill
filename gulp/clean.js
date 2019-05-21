@@ -1,10 +1,8 @@
-import {task} from 'gulp';
-import del from 'del';
+import { task } from "gulp";
+import del from "del";
 
 export const handleClean = () => {
-  return Promise.all([
-    del('build'),
-  ]);
+  return Promise.all([del("build")]);
 };
 
-task('clean', handleClean);
+task("clean", handleClean);

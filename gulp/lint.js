@@ -1,15 +1,13 @@
-import gulp from 'gulp';
-import eslint from 'gulp-eslint';
+import gulp from "gulp";
+import eslint from "gulp-eslint";
 
-const srcGlob = [
-  'src/**/*.ts',
-  'test/**/*.ts',
-];
+const srcGlob = ["src/**/*.ts", "test/**/*.ts", "src/**/*.js", "test/**/*.js"];
 
 export const handleLint = () => {
-  return gulp.src(srcGlob)
+  return gulp
+    .src(srcGlob)
     .pipe(eslint())
     .pipe(eslint.format());
 };
 
-gulp.task('lint', handleLint);
+gulp.task("lint", handleLint);

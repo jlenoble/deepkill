@@ -1,8 +1,8 @@
-import {task} from 'gulp';
-import del from 'del';
+import { task } from "gulp";
+import del from "del";
 
 export const distClean = () => {
-  return del('lib');
+  return del("lib");
 };
 
-task('dist-clean', distClean);
+task("dist-clean", distClean);

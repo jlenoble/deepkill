@@ -1,18 +1,17 @@
-import {src, task, series} from 'gulp';
-import mocha from 'gulp-mocha';
+import { src, task, series } from "gulp";
+import mocha from "gulp-mocha";
 
-import './build';
+import "./build";
 
-const testGlob = [
-  'build/test/**/*.test.js',
-];
+const testGlob = ["build/test/**/*.test.js"];
 
 export const handleTest = () => {
-  return src(testGlob, {read: false})
-    .pipe(mocha({
-      reporter: 'mochawesome',
-      require: ['source-map-support/register'],
-    }));
+  return src(testGlob, { read: false }).pipe(
+    mocha({
+      reporter: "mochawesome",
+      require: ["source-map-support/register"]
+    })
+  );
 };
 
-task('test', series('build', handleTest));
+task("test", series("build", handleTest));

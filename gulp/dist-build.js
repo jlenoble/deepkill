@@ -1,10 +1,8 @@
-import {src, dest, task} from 'gulp';
-import babel from 'gulp-babel';
+import { src, dest, task } from "gulp";
+import babel from "gulp-babel";
 
-const libDir = 'lib';
-const libGlob = [
-  'src/**/*.ts',
-];
+const libDir = "lib";
+const libGlob = ["src/**/*.ts", "src/**/*.js"];
 
 export const distBuild = () => {
   return src(libGlob)
@@ -12,4 +10,4 @@ export const distBuild = () => {
     .pipe(dest(libDir));
 };
 
-task('dist-build', distBuild);
+task("dist-build", distBuild);
