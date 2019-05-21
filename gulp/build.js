@@ -1,23 +1,30 @@
-import gulp from 'gulp';
+import {src, dest, lastRun, task} from 'gulp';
 import babel from 'gulp-babel';
-
 import sourcemaps from 'gulp-sourcemaps';
+import cached from 'gulp-cached';
+import newer from 'gulp-newer';
 
 const buildDir = 'build';
-const allSrcGlob = [
-  'src/**/*.js',
-  'test/**/*.js'
+const srcGlob = [
+  'src/**/*.ts',
+  'test/**/*.ts',
 ];
 
-export const build = () => {
-  return gulp.src(allSrcGlob, {
+export const handleBuild = () => {
+  return src(srcGlob, {
     base: process.cwd(),
-    since: gulp.lastRun(build)
+    since: lastRun(handleBuild),
   })
+    .pipe(newer(buildDir))
+    .pipe(cached())
     .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(buildDir));
+    .pipe(sourcemaps.write('.', {
+      sourceRoot: file => file.cwd,
+    }))
+    .pipe(dest(buildDir));
 };
 
-gulp.task('build', build);
+const build = handleBuild;
+
+task('build', build);

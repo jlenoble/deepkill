@@ -43,6 +43,33 @@
     "addons": [],
     "testRunners": [
       "Mocha"
-    ]
+    ],
+    "createdWith": "0.6.0-3",
+    "modifiedWith": "0.6.0-3",
+    "createdOn": "2019-05-21T13:37:18.346Z",
+    "modifiedOn": "2019-05-21T13:37:18.346Z",
+    "gulp": true,
+    "srcDir": "src",
+    "testDir": "test",
+    "buildDir": "build",
+    "docDir": "docs",
+    "libDir": "lib",
+    "gulpDir": "gulp",
+    "typescript": true,
+    "jsx": false,
+    "extensions": [
+      "ts"
+    ],
+    "jupyter": false,
+    "antlr4": false,
+    "server": true,
+    "client": false,
+    "devModuleTypes": [
+      "ES6"
+    ],
+    "prodModuleTypes": [
+      "CommonJS"
+    ],
+    "monorepo": false
   }
 }
