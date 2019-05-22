@@ -2,31 +2,27 @@ import psTree from "ps-tree";
 
 export default async function deepKill(pid, signal = "SIGKILL"): Promise<void> {
   return new Promise(
-    (resolve): void => {
+    (resolve, reject): void => {
       psTree(
         pid,
         (err, children): void => {
           if (err) {
-            console.warn(err.message);
+            return reject(err);
           }
 
-          [pid]
-            .concat(
-              children.map(
-                (p): string => {
-                  return p.PID;
-                }
-              )
-            )
-            .forEach(
-              (tpid): void => {
-                try {
-                  process.kill(tpid, signal);
-                } catch (e) {
-                  console.warn(e.message);
-                }
-              }
-            );
+          try {
+            process.kill(pid, signal);
+          } catch (e) {
+            return reject(e);
+          }
+
+          for (const tpid of children.map(({ PID }): string => PID)) {
+            try {
+              process.kill(tpid, signal);
+            } catch (e) {
+              return reject(e);
+            }
+          }
 
           resolve();
         }
