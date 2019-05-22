@@ -8,7 +8,6 @@ const testGlob = ["build/test/**/*.test.js"];
 export const handleTest = () => {
   return src(testGlob, { read: false }).pipe(
     mocha({
-      reporter: "mochawesome",
       require: ["source-map-support/register"]
     })
   );
