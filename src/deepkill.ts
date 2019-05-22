@@ -1,21 +1,36 @@
 import psTree from "ps-tree";
 
-export default function deekKill(pid, _signal, _callback) {
-  const signal = _signal || "SIGKILL";
-  const callback = _callback || function() {};
+export default async function deepKill(pid, signal = "SIGKILL"): Promise<void> {
+  return new Promise(
+    (resolve): void => {
+      psTree(
+        pid,
+        (err, children): void => {
+          if (err) {
+            console.warn(err.message);
+          }
 
-  psTree(pid, (err, children) => {
-    [pid]
-      .concat(
-        children.map(p => {
-          return p.PID;
-        })
-      )
-      .forEach(tpid => {
-        try {
-          process.kill(tpid, signal);
-        } catch (ex) {}
-      });
-    callback();
-  });
+          [pid]
+            .concat(
+              children.map(
+                (p): string => {
+                  return p.PID;
+                }
+              )
+            )
+            .forEach(
+              (tpid): void => {
+                try {
+                  process.kill(tpid, signal);
+                } catch (e) {
+                  console.warn(e.message);
+                }
+              }
+            );
+
+          resolve();
+        }
+      );
+    }
+  );
 }
