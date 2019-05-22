@@ -13,17 +13,21 @@ const waitMs = (n: number): Promise<void> => {
   );
 };
 
-describe("Testing deepKill", function(): void {
-  this.timeout(5000); // eslint-disable-line no-invalid-this
-
+describe("Testing deepKill", (): void => {
   let p;
 
   it(`Cluncky test relying on Un*x env`, async (): Promise<void> => {
     const while1File = path.join(__dirname, "scripts/while1.js");
+
+    // while1.js forks while2.js which forks while3.js which will never return.
+    // Therefore 3 related processes are created for the duration of this test
+    // as subprocesses of the Mocha process, which is a subprocess of the TDD.
     p = spawn("node", [while1File]);
 
+    // Waiting is necessary for the 3 "while" processes to be properly started.
     await waitMs(1000);
 
+    // Checking that the 3 processes exist, then kill them in one blow with deepKill
     const test1 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
 
@@ -41,8 +45,8 @@ describe("Testing deepKill", function(): void {
         expect(out).to.match(/.*node .*while3.js/);
       },
 
-      tearDownTest(): void {
-        deepKill(p.pid);
+      async tearDownTest(): void {
+        await deepKill(p.pid);
 
         p = { pid: p.pid, done: true };
       }
@@ -50,8 +54,8 @@ describe("Testing deepKill", function(): void {
 
     await test1();
 
-    await waitMs(1000);
-
+    // Checking that the 3 processes have been killed. No need to wait as test1
+    // won't return until deepKill has returned.
     const test2 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
 
@@ -75,24 +79,36 @@ describe("Testing deepKill", function(): void {
     await test2();
   });
 
+  // The very point of deepKill is to recover from what will happen if the above
+  // test fails. If deepKill is broken, then the 3 processes won't die and the test
+  // will never complete, thus hanging the TDD. Even Mocha timeout won't work
+  // because it's not the test that hangs but the Mocha process itself waiting
+  // for the 3 subprocesses to close.
+  //
+  // Below we attempt to recover from a broken test. But we can't recover from
+  // a broken deepKill. Thus the warning inviting the user to take action.
+  // Quitting the TDD kills the Mocha process and thus all its spawns. Unless of
+  // course if makeSingleTest is broken (sigh!), or spawn/fork! (very unlikely)
+
   afterEach(
     async (): Promise<void> => {
       if (!p.done) {
         console.log(
           chalk.cyan(`
-Spawns were not killed for ${chalk.yellow(
+Forks were not killed for ${chalk.yellow(
             p.pid
           )}, trying to recover with deepKill itself.
 If the TDD stops testing anything, then deepKill is broken;
 Otherwise, it's the test itself that is broken.
 To clean up all the processes, quitting the TDD should be enough (Ctrl-C).
-But check ${chalk.yellow(
+But check process ${chalk.yellow(
             p.pid
-          )} and the 2 following to be sure you don't need to kill them by hand.
+          )} and the 2 following processes to be sure you don't need
+to kill them by hand.
 `)
         );
 
-        deepKill(p.pid);
+        await deepKill(p.pid);
       }
     }
   );
