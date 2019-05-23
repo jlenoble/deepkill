@@ -3,7 +3,7 @@ import mocha from "gulp-mocha";
 
 import "./dist-build";
 
-const testGlob = ["docs/examples/**/*.js"];
+const testGlob = ["build/docs/examples/**/*.test.js"];
 
 export const handleDistTest = () => {
   return src(testGlob, { read: false }).pipe(

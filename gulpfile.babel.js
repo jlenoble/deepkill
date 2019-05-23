@@ -11,6 +11,7 @@ import "./gulp/lint";
 import "./gulp/dist-build";
 import "./gulp/dist-clean";
 import "./gulp/dist-test";
+import "./gulp/doc";
 import "./gulp/prepublish";
 
 usePlumbedGulpSrc();
