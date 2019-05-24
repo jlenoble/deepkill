@@ -3,6 +3,7 @@ import md from "markdown-include";
 import replace from "gulp-replace";
 import rename from "gulp-rename";
 import wrap from "gulp-wrap";
+import babel from "gulp-babel";
 
 const docConf = "markdown.json";
 const examplesGlob = ["docs/examples/**/*.ts", "docs/examples/**/*.js"];
@@ -26,44 +27,21 @@ md.buildLink = function(title, _anchor) {
   return "[" + title + "](#" + anchor + ")\n";
 };
 
-export const doc = () => {
+export const compileDocs = () => {
   md.reset();
   return md.compileFiles(docConf);
 };
 
-export const examples = () => {
+export const jsToDocs = () => {
   return gulp
     .src(examplesGlob, {
       base: process.cwd(),
-      since: gulp.lastRun(examples)
+      since: gulp.lastRun(jsToDocs)
     })
-    .pipe(replace(/describe.*\n  it.*\n    /, ""))
-    .pipe(replace(/\n  }\);\n}\);\n/, "\n"))
-    .pipe(replace(/\n    /g, "\n"))
-    .pipe(replace(/\.\.\/\.\.\/src\//g, ""))
-    .pipe(replace(/import \{expect\} from 'chai';\n/g, ""))
-    .pipe(replace(/expect\((.*)\).to.equal\((.*)\)/gm, "$1 === $2"))
-    .pipe(replace(/expect\((.*)\).not.to.equal\((.*)\)/gm, "$1 !== $2"))
-    .pipe(replace(/expect\((.*)\).to.be.(.*)/gm, "$1; // $2"))
-    .pipe(replace(/expect\(\(\) => (.*)\).to.throw\(\)/gm, "$1; // throws"))
     .pipe(
-      replace(
-        /expect\(\(\) => (.*)\).not.to.throw\(\)/gm,
-        `$1; // doesn't throw`
-      )
+      wrap("```js\n<%- contents %>```", {}, { parse: false, engine: "ejs" })
     )
-    .pipe(replace(/(expect.*)\n?(  )?(.*;)/gm, "$1$3"))
-    .pipe(replace(/expect\((.*)\).to.equal\((.*)\)/gm, "$1 === $2"))
-    .pipe(replace(/expect\((.*)\).not.to.equal\((.*)\)/gm, "$1 !== $2"))
-    .pipe(replace(/expect\((.*)\).to.be.(.*)/gm, "$1; // $2"))
-    .pipe(replace(/expect\(\(\) => (.*)\).to.throw\(\)/gm, "$1; // throws"))
-    .pipe(
-      replace(
-        /expect\(\(\) => (.*)\).not.to.throw\(\)/gm,
-        `$1; // doesn't throw`
-      )
-    )
-    .pipe(wrap("```js\n<%- contents %>```", {}, { parse: false }))
+    .pipe(replace(/\/\*[\s\S]*?\*\/\n/gm, ""))
     .pipe(
       rename({
         extname: ".md"
@@ -72,4 +50,26 @@ export const examples = () => {
     .pipe(gulp.dest(buildDir));
 };
 
-gulp.task("doc", gulp.series(examples, doc));
+export const jsToTests = () => {
+  return gulp
+    .src(examplesGlob, {
+      base: process.cwd(),
+      since: gulp.lastRun(jsToTests)
+    })
+    .pipe(
+      wrap(
+        `
+import { expect } from "chai";
+<\%- contents %\>
+`,
+        {},
+        { parse: false, engine: "ejs" }
+      )
+    )
+    .pipe(replace(/\/\*([\s\S]*?)\*\//gm, "$1"))
+    .pipe(replace(/(?=((import[\s\S]+?)(deepkill)))\1/m, "$2../../../lib/$3"))
+    .pipe(babel())
+    .pipe(gulp.dest(buildDir));
+};
+
+gulp.task("doc", gulp.series(gulp.parallel(jsToDocs, jsToTests), compileDocs));
