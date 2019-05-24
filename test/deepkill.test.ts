@@ -14,7 +14,7 @@ const waitMs = (n: number): Promise<void> => {
 };
 
 describe("Testing deepKill", (): void => {
-  let p;
+  let z: { pid: number; done: boolean };
 
   it(`Cluncky test relying on Un*x env`, async (): Promise<void> => {
     const while1File = path.join(__dirname, "scripts/while1.js");
@@ -22,7 +22,8 @@ describe("Testing deepKill", (): void => {
     // while1.js forks while2.js which forks while3.js which will never return.
     // Therefore 3 related processes are created for the duration of this test
     // as subprocesses of the Mocha process, which is a subprocess of the TDD.
-    p = spawn("node", [while1File]);
+    const p = spawn("node", [while1File]);
+    z = { pid: p.pid, done: false };
 
     // Waiting is necessary for the 3 "while" processes to be properly started.
     await waitMs(1000);
@@ -31,12 +32,13 @@ describe("Testing deepKill", (): void => {
     const test1 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
 
-      checkResults(res): void {
+      checkResults(res: { out: () => string }): void {
         const out = res
           .out()
           .split("\n")
           .filter(
-            (str): boolean => str.includes("node") && str.includes("while")
+            (str: string): boolean =>
+              str.includes("node") && str.includes("while")
           )
           .join("\n");
 
@@ -45,10 +47,10 @@ describe("Testing deepKill", (): void => {
         expect(out).to.match(/.*node .*while3.js/);
       },
 
-      async tearDownTest(): void {
+      async tearDownTest(): Promise<void> {
         await deepKill(p.pid);
 
-        p = { pid: p.pid, done: true };
+        z.done = true;
       }
     });
 
@@ -59,12 +61,13 @@ describe("Testing deepKill", (): void => {
     const test2 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
 
-      checkResults(res): void {
+      checkResults(res: { out: () => string }): void {
         const out = res
           .out()
           .split("\n")
           .filter(
-            (str): boolean => str.includes("node") && str.includes("while")
+            (str: string): boolean =>
+              str.includes("node") && str.includes("while")
           )
           .join("\n");
 
@@ -92,23 +95,23 @@ describe("Testing deepKill", (): void => {
 
   afterEach(
     async (): Promise<void> => {
-      if (!p.done) {
+      if (!z.done) {
         console.log(
           chalk.cyan(`
 Forks were not killed for ${chalk.yellow(
-            p.pid
+            z.pid.toString()
           )}, trying to recover with deepKill itself.
 If the TDD stops testing anything, then deepKill is broken;
 Otherwise, it's the test itself that is broken.
 To clean up all the processes, quitting the TDD should be enough (Ctrl-C).
 But check process ${chalk.yellow(
-            p.pid
+            z.pid.toString()
           )} and the 2 following processes to be sure you don't need
 to kill them by hand.
 `)
         );
 
-        await deepKill(p.pid);
+        await deepKill(z.pid);
       }
     }
   );

@@ -4,7 +4,7 @@ export default async function deepKill(
   pid: number,
   signal: string = "SIGKILL"
 ): Promise<void> {
-  return new Promise(
+  await new Promise(
     (resolve, reject): void => {
       psTree(
         pid,
@@ -19,7 +19,9 @@ export default async function deepKill(
             return reject(e);
           }
 
-          for (const tpid of children.map(({ PID }): string => PID)) {
+          for (const tpid of children.map(
+            ({ PID }): number => Number.parseInt(PID, 10)
+          )) {
             try {
               process.kill(tpid, signal);
             } catch (e) {
