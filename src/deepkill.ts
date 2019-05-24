@@ -1,6 +1,9 @@
 import psTree from "ps-tree";
 
-export default async function deepKill(pid, signal = "SIGKILL"): Promise<void> {
+export default async function deepKill(
+  pid: number,
+  signal: string = "SIGKILL"
+): Promise<void> {
   return new Promise(
     (resolve, reject): void => {
       psTree(
