@@ -1,4 +1,5 @@
 import gulp from "gulp";
+import path from "path";
 import md from "markdown-include";
 import replace from "gulp-replace";
 import rename from "gulp-rename";
@@ -39,7 +40,19 @@ export const jsToDocs = () => {
       since: gulp.lastRun(jsToDocs)
     })
     .pipe(
-      wrap("```js\n<%- contents %>```", {}, { parse: false, engine: "ejs" })
+      wrap(
+        "```js\n<%- pathComment(file) %><%- contents %>```",
+        {
+          pathComment(file) {
+            if (/\.test.js$/.test(file.path)) {
+              return "";
+            }
+
+            return `// File "./${path.basename(file.path)}"\n`;
+          }
+        },
+        { parse: false, engine: "ejs" }
+      )
     )
     .pipe(replace(/\/\*[\s\S]*?\*\/\n/gm, ""))
     .pipe(replace(/path.join\(__dirname,\s+"([^"]+)"\s*\)/gm, '"./$1"'))

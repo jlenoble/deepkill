@@ -1,7 +1,7 @@
 {
   "name": "deepkill",
   "version": "0.2.0-0",
-  "description": "Small helper to kill a process and all its forks",
+  "description": "Small helper to kill a process and all its children",
   "keywords": [
     "kill",
     "process"
