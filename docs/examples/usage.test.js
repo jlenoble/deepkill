@@ -6,6 +6,7 @@ describe("Usage examples", function() {
   it("Launching and killing non closing processes", function() {
     let p; */
 
+// We create several child processes that will prevent this very process from ever completing.
 const /* proc = () => { */
   p = spawn("node", [path.join(__dirname, "fork1.js")]);
 /* };
@@ -14,19 +15,23 @@ expect(proc).not.to.throw();
 expect(p).not.to.be.undefined;
 expect(p.pid).to.be.a("number"); */
 
-// Do stuff while children are running...
-/* const ret = */
+// Now we do stuff while the children are running...
 
+// By killing the spawned process explicitly with deepKill, we also kill all the processes
+// it has ever created and that have not closed yet, thus allowing this very process to return
+/* const ret = */
 deepKill(p.pid).then(
   () => {
-    // Do stuff after children have closed...
+    // We do more cleanup stuff after the children have closed...
   },
   () => {
-    // Could not somehow cleanup the mess.
-    console.warn(
-      "Some helpful message telling the user how to find and kill the processes by hand" +
-        " and how to track/report the bug."
-    );
+    // We could not somehow terminate all the child processes.
+    console.warn(`
+Some helpful message telling the user how to:
+  - abort
+  - find and kill the surviving child processes by hand
+  - track and report the exposed bug
+`);
   }
 );
 /* return ret;
