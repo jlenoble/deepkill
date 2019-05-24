@@ -42,6 +42,7 @@ export const jsToDocs = () => {
       wrap("```js\n<%- contents %>```", {}, { parse: false, engine: "ejs" })
     )
     .pipe(replace(/\/\*[\s\S]*?\*\/\n/gm, ""))
+    .pipe(replace(/path.join\(__dirname,\s+"([^"]+)"\s*\)/gm, '"./$1"'))
     .pipe(
       rename({
         extname: ".md"
