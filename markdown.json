@@ -1,7 +1,0 @@
-{
-  "build": "README.md",
-  "files": ["docs/index.md"],
-  "tableOfContents": {
-    "heading": "# deepkill\n\nSmall helper to kill a process and all its children"
-  }
-}
