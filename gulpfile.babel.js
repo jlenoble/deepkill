@@ -13,6 +13,7 @@ import "./gulp/dist-clean";
 import "./gulp/dist-test";
 import "./gulp/doc";
 import "./gulp/prepublish";
+import "./gulp/types";
 
 usePlumbedGulpSrc();
 
