@@ -1,10 +1,10 @@
-import psTree from "ps-tree";
+import psTree, { PS } from "ps-tree";
 
 export default async function deepKill(
   pid: number,
-  signal: string = "SIGKILL"
+  signal: NodeJS.Signals = "SIGKILL"
 ): Promise<void> {
-  await new Promise(
+  const children = (await new Promise(
     (resolve, reject): void => {
       psTree(
         pid,
@@ -13,25 +13,17 @@ export default async function deepKill(
             return reject(err);
           }
 
-          try {
-            process.kill(pid, signal);
-          } catch (e) {
-            return reject(e);
-          }
-
-          for (const tpid of children.map(
-            ({ PID }): number => Number.parseInt(PID, 10)
-          )) {
-            try {
-              process.kill(tpid, signal);
-            } catch (e) {
-              return reject(e);
-            }
-          }
-
-          resolve();
+          resolve(children);
         }
       );
     }
-  );
+  )) as PS[];
+
+  process.kill(pid, signal);
+
+  for (const tpid of children.map(
+    ({ PID }): number => Number.parseInt(PID, 10)
+  )) {
+    process.kill(tpid, signal);
+  }
 }
