@@ -27,7 +27,7 @@ Using `deepKill` is a **hack**. You call it after each test that spawns a buggy 
 
 `deepKill` has the following signature:
 
-`async function deepKill(pid: number, signal: string = "SIGKILL"): Promise<void>`
+`function deepKill(pid: number, signal?: NodeJS.Signals): Promise<void>`
 
 where:
 
