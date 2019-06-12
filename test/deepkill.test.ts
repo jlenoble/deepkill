@@ -6,11 +6,9 @@ import chalk from "chalk";
 import deepKill from "../src/deepkill";
 
 const waitMs = (n: number): Promise<void> => {
-  return new Promise(
-    (resolve): void => {
-      setTimeout(resolve, n);
-    }
-  );
+  return new Promise((resolve): void => {
+    setTimeout(resolve, n);
+  });
 };
 
 describe("Testing deepKill", (): void => {
