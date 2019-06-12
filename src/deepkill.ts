@@ -1,29 +1,40 @@
+/* eslint-disable @typescript-eslint/array-type */
 import psTree, { PS } from "ps-tree";
 
 export default async function deepKill(
   pid: number,
   signal: NodeJS.Signals = "SIGKILL"
 ): Promise<void> {
-  const children = (await new Promise(
-    (resolve, reject): void => {
+  const children: ReadonlyArray<PS> = (await new Promise(
+    (resolve): void => {
       psTree(
         pid,
-        (err, children): void => {
+        (err: Error, children: ReadonlyArray<PS>): void => {
           if (err) {
-            return reject(err);
+            console.warn(err);
+            return resolve([]);
           }
 
           resolve(children);
         }
       );
     }
-  )) as PS[];
+  )) as ReadonlyArray<PS>;
 
-  process.kill(pid, signal);
-
-  for (const tpid of children.map(
-    ({ PID }): number => Number.parseInt(PID, 10)
-  )) {
-    process.kill(tpid, signal);
+  try {
+    process.kill(pid, signal);
+  } catch (e) {
+    console.warn(e);
+    return;
   }
+
+    for (const tpid of children.map(
+      ({ PID }): number => Number.parseInt(PID, 10)
+    )) {
+      try {
+        process.kill(tpid, signal);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
 }
