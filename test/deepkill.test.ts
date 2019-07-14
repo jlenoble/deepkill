@@ -80,6 +80,74 @@ describe("Testing deepKill", (): void => {
     await test2();
   });
 
+  it(`Killing the same process twice`, async (): Promise<void> => {
+    const while1File = path.join(__dirname, "scripts/while1.js");
+
+    // while1.js forks while2.js which forks while3.js which will never return.
+    // Therefore 3 related processes are created for the duration of this test
+    // as subprocesses of the Mocha process, which is a subprocess of the TDD.
+    const p = spawn("node", [while1File]);
+    z = { pid: p.pid, done: false };
+
+    // Waiting is necessary for the 3 "while" processes to be properly started.
+    await waitMs(1000);
+
+    // Checking that the 3 processes exist, then kill them in one blow with deepKill
+    const test1 = makeSingleTest({
+      childProcess: ["ps", ["-u"]],
+
+      checkResults(res: { out: () => string }): void {
+        const out = res
+          .out()
+          .split("\n")
+          .filter(
+            (str: string): boolean =>
+              str.includes("node") && str.includes("while")
+          )
+          .join("\n");
+
+        expect(out).to.match(new RegExp(`\\s+${p.pid}\\s+.*node .*while1.js`));
+        expect(out).to.match(/.*node .*while2.js/);
+        expect(out).to.match(/.*node .*while3.js/);
+      },
+
+      async tearDownTest(): Promise<void> {
+        // Killing twice
+        await deepKill(p.pid);
+        await deepKill(p.pid);
+
+        z.done = true;
+      }
+    });
+
+    await test1();
+
+    // Checking that the 3 processes have been killed. No need to wait as test1
+    // won't return until deepKill has returned.
+    const test2 = makeSingleTest({
+      childProcess: ["ps", ["-u"]],
+
+      checkResults(res: { out: () => string }): void {
+        const out = res
+          .out()
+          .split("\n")
+          .filter(
+            (str: string): boolean =>
+              str.includes("node") && str.includes("while")
+          )
+          .join("\n");
+
+        expect(out).not.to.match(
+          new RegExp(`\\s+${p.pid}\\s+.*node .*while1.js`)
+        );
+        expect(out).not.to.match(/.*node .*while2.js/);
+        expect(out).not.to.match(/.*node .*while3.js/);
+      }
+    });
+
+    await test2();
+  });
+
   // The very point of deepKill is to recover from what will happen if the above
   // test fails. If deepKill is broken, then the 3 processes won't die and the test
   // will never complete, thus hanging the TDD. Even Mocha timeout won't work
