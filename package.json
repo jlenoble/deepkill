@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@types/ps-tree": "^1.1.0",
+    "process-exists": "^3.1.0",
     "ps-tree": "^1.2.0"
   },
   "devDependencies": {
@@ -64,7 +65,7 @@
     "babel-plugin-add-module-exports": "^1.0.2",
     "chai": "^4.2.0",
     "chalk": "^2.4.2",
-    "child-process-data": "^0.7.0",
+    "child-process-data": "link:../child-process-data",
     "del": "^4.1.1",
     "ejs": "^2.6.1",
     "eslint": "^5.16.0",
