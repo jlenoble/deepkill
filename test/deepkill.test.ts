@@ -29,6 +29,7 @@ describe("Testing deepKill", (): void => {
     // Checking that the 3 processes exist, then kill them in one blow with deepKill
     const test1 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
+      silent: true,
 
       checkResults(res: { out: () => string }): void {
         const out = res
@@ -58,6 +59,7 @@ describe("Testing deepKill", (): void => {
     // won't return until deepKill has returned.
     const test2 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
+      silent: true,
 
       checkResults(res: { out: () => string }): void {
         const out = res
@@ -95,6 +97,7 @@ describe("Testing deepKill", (): void => {
     // Checking that the 3 processes exist, then kill them in one blow with deepKill
     const test1 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
+      silent: true,
 
       checkResults(res: { out: () => string }): void {
         const out = res
@@ -126,6 +129,7 @@ describe("Testing deepKill", (): void => {
     // won't return until deepKill has returned.
     const test2 = makeSingleTest({
       childProcess: ["ps", ["-u"]],
+      silent: true,
 
       checkResults(res: { out: () => string }): void {
         const out = res
