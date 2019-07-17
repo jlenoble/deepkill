@@ -16,7 +16,7 @@ export default async function deepKill(
     });
   })) as ReadonlyArray<PS>;
 
-  let error: Error | undefined;
+  let err: Error | undefined;
 
   try {
     process.kill(pid, signal);
@@ -29,20 +29,20 @@ export default async function deepKill(
       } catch (e) {
         if (/ESRCH/.test(e.message)) {
           // Drop error: process already killed
-        } else {
-          error = e;
+        } else if (!err) {
+          err = e;
         }
       }
     }
   } catch (e) {
     if (/ESRCH/.test(e.message)) {
       // Drop error: process already killed
-    } else {
-      error = e;
+    } else if (!err) {
+      err = e;
     }
   }
 
-  if (error) {
-    throw error;
+  if (err) {
+    throw err;
   }
 }
