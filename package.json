@@ -93,7 +93,5 @@
     "source-map-support": "^0.5.12",
     "stream-to-promise": "^2.2.0",
     "typescript": "^3.5.3"
-  },
-  "peerDependencies": {},
-  "optionalDependencies": {}
+  }
 }
