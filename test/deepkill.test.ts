@@ -50,7 +50,7 @@ describe("Testing deepKill", (): void => {
         await deepKill(p.pid);
 
         z.done = true;
-      }
+      },
     });
 
     await test1();
@@ -76,7 +76,7 @@ describe("Testing deepKill", (): void => {
         );
         expect(out).not.to.match(/.*node .*while2.js/);
         expect(out).not.to.match(/.*node .*while3.js/);
-      }
+      },
     });
 
     await test2();
@@ -120,7 +120,7 @@ describe("Testing deepKill", (): void => {
         await deepKill(p.pid);
 
         z.done = true;
-      }
+      },
     });
 
     await test1();
@@ -146,7 +146,7 @@ describe("Testing deepKill", (): void => {
         );
         expect(out).not.to.match(/.*node .*while2.js/);
         expect(out).not.to.match(/.*node .*while3.js/);
-      }
+      },
     });
 
     await test2();

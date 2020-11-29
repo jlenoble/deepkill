@@ -103,5 +103,5 @@ Until we write properly our subprocesses, `deepKill` keeps our development proce
 
 deepkill is [MIT licensed](./LICENSE).
 
-© 2017-2019 [Jason Lenoble](mailto:jason.lenoble@gmail.com)
+© 2017-2020 [Jason Lenoble](mailto:jason.lenoble@gmail.com)
 
